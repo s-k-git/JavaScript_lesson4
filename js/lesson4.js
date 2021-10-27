@@ -43,6 +43,10 @@ const fetchQuizData = async (index) => {
   setNextQuiz(quizInstance, index);
 };
 
+const setNextQuiz = (quizInstance, index) => {
+  makeQuiz(quizInstance, index);
+};
+
 const makeQuiz = (quizInstance, index) => {
   if (index < 11) {
     let a = Math.floor(Math.random() * 4);
@@ -66,7 +70,6 @@ const makeQuiz = (quizInstance, index) => {
     choices0Element.appendChild(button0Element);
     button0Element.addEventListener('click', () => {
       NumberOfCorrectAnswer++;
-      console.log(NumberOfCorrectAnswer);
       index++;
       choices0Element.removeChild(choices0Element.firstChild);
       choices1Element.removeChild(choices1Element.firstChild);
