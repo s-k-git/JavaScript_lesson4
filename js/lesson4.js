@@ -37,10 +37,13 @@ const fetchQuizData = async (index) => {
   titleElement.textContent = '取得中';
   questionElement.textContent = '少々お待ち下さい';
 
-  const response = await fetch(API_URL);
+  try {const response = await fetch(API_URL);
   const quizData = await response.json();
   const quizInstance = new Quiz(quizData);
   setNextQuiz(quizInstance, index);
+  } catch(err) {
+    console.log(`${API_URL}にアクセスできません`);
+  }
 };
 
 const setNextQuiz = (quizInstance, index) => {
