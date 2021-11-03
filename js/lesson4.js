@@ -1,9 +1,9 @@
 const API_URL = 'https://opentdb.com/api.php?amount=10&type=multiple';
-let NumberOfCorrectAnswer = 0;
 
 class Quiz {
   constructor(quizData) {
     this._quizzes = quizData.results;
+    this._correctAnswersNum = 0;
   }
   getQuizCategory(index) {
     return this._quizzes[index - 1].category;
@@ -20,6 +20,17 @@ class Quiz {
   getcorrectAnswer(index) {
     return this._quizzes[index - 1].correct_answer;
   }
+  countCorrectAnswers(index, answer) {
+    const correctAnswer = this._quizzes[index - 1].correct_answer;
+    console.log(correctAnswer);
+    console.log(answer);
+    if (answer === correctAnswer) {
+      return this._correctAnswersNum++;
+    }
+  }
+  getCorrectAnswersNum() {
+   return this._correctAnswersNum;
+ }
 };
 
 const titleElement = document.getElementById('title');
@@ -42,7 +53,10 @@ const fetchQuizData = async (index) => {
   const quizInstance = new Quiz(quizData);
   setNextQuiz(quizInstance, index);
   } catch(err) {
-    console.log(`${API_URL}にアクセスできません`);
+    titleElement.textContent = `読込失敗`;
+    genreElement.textContent = `${API_URL}へのアクセス失敗  `;
+    difficultyElement.textContent =`もしくは、ソースコードに間違いがあります`
+    questionElement.textContent = "ソースコードを確認しましょう";
   }
 };
 
@@ -72,7 +86,8 @@ const makeQuiz = (quizInstance, index) => {
     button0Element.innerHTML = quizInstance.getcorrectAnswer(index);
     choices0Element.appendChild(button0Element);
     button0Element.addEventListener('click', () => {
-      NumberOfCorrectAnswer++;
+      const answer = quizInstance.getcorrectAnswer(index);
+      quizInstance.countCorrectAnswers(index, answer);
       index++;
       choices0Element.removeChild(choices0Element.firstChild);
       choices1Element.removeChild(choices1Element.firstChild);
@@ -117,20 +132,20 @@ const makeQuiz = (quizInstance, index) => {
       setNextQuiz(quizInstance, index);
     });
   } else {
-    finish();
+    finish(quizInstance);
   }
 };
 
-const finish = () => {
+const finish = (quizInstance) => {
   const choices0Element = document.getElementById(`choices0`);
-  titleElement.innerHTML = `あなたの正解数は${NumberOfCorrectAnswer}です!!`;
+  titleElement.innerHTML = `あなたの正解数は${quizInstance.getCorrectAnswersNum()}です!!`;
   genreElement.innerHTML = "";
   difficultyElement.innerHTML = "";
   questionElement.innerHTML = "再度チャレンジしたい場合は以下のボタンをクリック";
   const button0Element = document.createElement('button');
   button0Element.innerHTML = "ホームへ戻る";
   choices0Element.appendChild(button0Element);
-  button0Element.addEventListener("click", function () {
+  button0Element.addEventListener("click", () => {
     window.location.reload(false);
   })
 };
