@@ -22,15 +22,13 @@ class Quiz {
   }
   countCorrectAnswers(index, answer) {
     const correctAnswer = this._quizzes[index - 1].correct_answer;
-    console.log(correctAnswer);
-    console.log(answer);
     if (answer === correctAnswer) {
       return this._correctAnswersNum++;
     }
   }
   getCorrectAnswersNum() {
-   return this._correctAnswersNum;
- }
+    return this._correctAnswersNum;
+  }
 };
 
 const titleElement = document.getElementById('title');
@@ -48,15 +46,15 @@ const fetchQuizData = async (index) => {
   titleElement.textContent = '取得中';
   questionElement.textContent = '少々お待ち下さい';
 
-  try {const response = await fetch(API_URL);
-  const quizData = await response.json();
-  const quizInstance = new Quiz(quizData);
-  setNextQuiz(quizInstance, index);
-  } catch(err) {
-    titleElement.textContent = `読込失敗`;
-    genreElement.textContent = `${API_URL}へのアクセス失敗  `;
-    difficultyElement.textContent =`もしくは、ソースコードに間違いがあります`
-    questionElement.textContent = "ソースコードを確認しましょう";
+  try {
+    const response = await fetch(API_URL);
+    const quizData = await response.json();
+    const quizInstance = new Quiz(quizData);
+    setNextQuiz(quizInstance, index);
+  } catch (err) {
+    titleElement.textContent = "取得失敗";
+    questionElement.style.display = "none";
+    console.log(err);
   }
 };
 
@@ -65,12 +63,12 @@ const setNextQuiz = (quizInstance, index) => {
 };
 
 const makeQuiz = (quizInstance, index) => {
-  if (index < 11) {
-    let a = Math.floor(Math.random() * 4);
-    let no0 = `choices${a % 4}`;
-    let no1 = `choices${(a + 1) % 4}`;
-    let no2 = `choices${(a + 2) % 4}`;
-    let no3 = `choices${(a + 3) % 4}`;
+  if (index <= quizInstance._quizzes.length) {
+    let randomNo = Math.floor(Math.random() * 4);
+    let no0 = `choices${randomNo % 4}`;
+    let no1 = `choices${(randomNo + 1) % 4}`;
+    let no2 = `choices${(randomNo + 2) % 4}`;
+    let no3 = `choices${(randomNo + 3) % 4}`;
 
     const choices0Element = document.getElementById(no0);
     const choices1Element = document.getElementById(no1);
